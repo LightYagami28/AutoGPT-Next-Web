@@ -1,6 +1,6 @@
 import { PromptTemplate } from "@langchain/core/prompts";
 import { ChatOpenAI } from "@langchain/openai";
-import { randomInt } from "crypto";
+import { randomInt } from "node:crypto";
 import type { ModelSettings } from "./types";
 import { GPT_35_TURBO } from "./constants";
 

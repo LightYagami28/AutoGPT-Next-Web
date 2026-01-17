@@ -231,7 +231,7 @@ class AutonomousAgent {
     }
 
     // decide whether to pause agent when pause mode is enabled
-    this.isRunning = !(this.playbackControl === AGENT_PAUSE);
+    this.isRunning = this.playbackControl !== AGENT_PAUSE;
 
     // reset playbackControl to pause so agent pauses on next set of task(s)
     if (this.playbackControl === AGENT_PLAY) {
@@ -240,21 +240,18 @@ class AutonomousAgent {
   }
 
   private maxLoops() {
-    const defaultLoops = !!this.session?.user.subscriptionId
+    const defaultLoops = this.session?.user.subscriptionId
       ? DEFAULT_MAX_LOOPS_PAID
       : DEFAULT_MAX_LOOPS_FREE;
 
-    return !!this.modelSettings.customApiKey
+    return this.modelSettings.customApiKey
       ? this.modelSettings.customMaxLoops || DEFAULT_MAX_LOOPS_CUSTOM_API_KEY
       : defaultLoops;
   }
 
   async getInitialTasks(): Promise<string[]> {
     if (this.shouldRunClientSide()) {
-      //FIXME
-      // if (!env.NEXT_PUBLIC_FF_MOCK_MODE_ENABLED) {
-      //   await testConnection(this.modelSettings);
-      // }
+
       return await AgentService.startGoalAgent(
         this.modelSettings,
         this.goal,
@@ -379,7 +376,6 @@ class AutonomousAgent {
     this.sendManualShutdownMessage();
     this.isRunning = false;
     this.shutdown();
-    return;
   }
 
   sendMessage(message: Message) {
