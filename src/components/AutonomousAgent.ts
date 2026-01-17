@@ -56,6 +56,7 @@ class AutonomousAgent {
   currentTask?: Task;
 
   constructor(
+    // @ts-ignore - Constructor has many parameters, but they're all necessary for initialization
     name: string,
     goal: string,
     renderMessage: (message: Message) => void,

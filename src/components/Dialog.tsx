@@ -22,10 +22,16 @@ export default function Dialog({
   }
 
   return (
-    <div className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/70 p-3 font-mono text-white outline-none transition-all">
-      <div
-        className="absolute bottom-0 left-0 right-0 top-0 "
+    <div
+      className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/70 p-3 font-mono text-white outline-none transition-all"
+      role="dialog"
+      aria-modal="true"
+    >
+      <button
+        className="absolute bottom-0 left-0 right-0 top-0 cursor-default"
         onClick={close}
+        aria-label="Close dialog"
+        type="button"
       />
       <div className="relative mx-auto my-6 w-auto max-w-3xl rounded-lg border-2 border-zinc-600">
         {/*content*/}

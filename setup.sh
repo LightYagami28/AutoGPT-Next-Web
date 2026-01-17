@@ -50,27 +50,30 @@ read_variable() {
   while true; do
     read -p "$prompt" var_val
     if [[ -z "$var_val" ]]; then
-      echo -e "${RED}Error: Please enter a valid value for $var_name.${NC}"
+      echo -e "${RED}Error: Please enter a valid value for $var_name.${NC}" >&2
+      continue
     elif [[ ! $var_val =~ $pattern ]]; then
-      echo -e "${RED}Error: Invalid format for $var_name.${NC}"
+      echo -e "${RED}Error: Invalid format for $var_name.${NC}" >&2
+      continue
     else
       eval "$var_name=$var_val"
       echo -e "${GREEN}$var_name set. ✔${NC}"
-      break
+      return 0
     fi
   done
 }
 
 # Get user input for OPENAI_API_KEY
-read_variable "${GREEN}Enter your OpenAI API Key (required):${NC} " "^sk-[a-zA-Z0-9]{48}$" "OPENAI_API_KEY"
+read_variable "${GREEN}Enter your OpenAI API Key (required):${NC} " "^sk-[a-zA-Z0-9]{48}$" "OPENAI_API_KEY" || return 1
 
 # Get user input for OPENAI_API_KEY
-read_variable "${GREEN}Enter your Guest Key (required):${NC} " "^.+$" "NEXT_PUBLIC_GUEST_KEY"
+read_variable "${GREEN}Enter your Guest Key (required):${NC} " "^.+$" "NEXT_PUBLIC_GUEST_KEY" || return 1
 
 # Get user input for NEXT_PUBLIC_WEB_SEARCH_ENABLED
 select_web_search_enabled
 
 echo -e "${GREEN}All required variables set. ✔${NC}"
+return 0
 
 NEXTAUTH_SECRET=$(openssl rand -base64 32)
 

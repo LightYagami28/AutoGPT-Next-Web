@@ -1,13 +1,5 @@
 import { z } from "zod";
 
-// export const messageParser = z.object({
-//   taskId: z.string().optional(),
-//   parentTaskId: z.string().optional(),
-//   type: z.enum(["goal", "thinking", "task", "action", "system"]),
-//   info: z.string().optional(),
-//   value: z.string(),
-// });
-
 /* Message & Task Type */
 export const [
   MESSAGE_TYPE_GOAL,
@@ -16,12 +8,12 @@ export const [
   MESSAGE_TYPE_ACTION,
   MESSAGE_TYPE_SYSTEM,
 ] = [
-  "goal" as const,
-  "thinking" as const,
-  "task" as const,
-  "action" as const,
-  "system" as const,
-];
+    "goal" as const,
+    "thinking" as const,
+    "task" as const,
+    "action" as const,
+    "system" as const,
+  ];
 
 export const [
   TASK_STATUS_STARTED,
@@ -29,11 +21,11 @@ export const [
   TASK_STATUS_COMPLETED,
   TASK_STATUS_FINAL,
 ] = [
-  "started" as const,
-  "executing" as const,
-  "completed" as const,
-  "final" as const,
-];
+    "started" as const,
+    "executing" as const,
+    "completed" as const,
+    "final" as const,
+  ];
 
 const TaskStatusSchema = z.union([
   z.literal(TASK_STATUS_STARTED),

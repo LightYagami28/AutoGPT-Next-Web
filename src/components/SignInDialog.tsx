@@ -13,17 +13,21 @@ export const SignInDialog = ({ show, close }: SignInDialogProps) => {
   const { signIn } = useAuth();
   const { t } = useTranslation(['chat', 'common']);
 
+  const handleSignIn = () => {
+    signIn().catch(() => { });
+  };
+
   return (
     <Dialog
       header={`${t('common:sign-in')} 🔐`}
       isShown={show}
       close={close}
-      footerButton={<Button onClick={() => signIn().catch(() => { })}>{t('common:sign-in')}</Button>}
+      footerButton={<Button onClick={handleSignIn}>{t('common:sign-in')}</Button>}
     >
       <Trans i18nKey="signin-tips" ns="chat">
         <p>
           Please
-          <a className="link" onClick={() => signIn().catch(() => { })}>
+          <a className="link" onClick={handleSignIn}>
             sign in
           </a>
           to deploy an Agent! 🤖

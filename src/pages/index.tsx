@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useCallback } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { type NextPage, type GetStaticProps } from "next";
 import DefaultLayout from "../layout/default";
 import ChatWindow from "../components/ChatWindow";

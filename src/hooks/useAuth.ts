@@ -1,6 +1,5 @@
 import type { Session } from "next-auth";
 import { signIn, signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { z } from "zod";
 

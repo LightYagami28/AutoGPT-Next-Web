@@ -23,7 +23,7 @@ export const DEFAULT_SETTINGS: ModelSettings = {
 
 const loadSettings = (): ModelSettings => {
   const defaultSettings = { ...DEFAULT_SETTINGS };
-  if (typeof window === "undefined") {
+  if (typeof globalThis.window === "undefined") {
     return defaultSettings;
   }
 
@@ -39,7 +39,7 @@ const loadSettings = (): ModelSettings => {
         defaultSettings[key] = value;
       }
     });
-  } catch (error) {}
+  } catch (error) { }
 
   if (!isGuestMode() && !defaultSettings.customApiKey) {
     return { ...DEFAULT_SETTINGS };
