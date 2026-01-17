@@ -49,9 +49,8 @@ const getTextSections = (messages: Message[]): string[] => {
       }
       if (message.type == MESSAGE_TYPE_TASK) {
         if (message.info) {
-          return `${i18n?.t("executing", { ns: "chat" })} "${message.value}": ${
-            message.info
-          }`;
+          return `${i18n?.t("executing", { ns: "chat" })} "${message.value}": ${message.info
+            }`;
         } else {
           return `${i18n?.t("add-task", { ns: "common" })}${message.value}`;
         }

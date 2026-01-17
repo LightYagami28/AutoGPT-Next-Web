@@ -17,16 +17,16 @@ const WindowButton = ({
   styleClass,
 }: WindowButtonProps) => {
   return (
-    <div
-      className={`flex cursor-pointer items-center gap-2 p-1 px-2 text-sm hover:bg-white/10 ${
-        styleClass?.container || ""
-      }`}
+    <button
+      type="button"
+      className={`flex cursor-pointer items-center gap-2 p-1 px-2 text-sm hover:bg-white/10 transition-colors ${styleClass?.container || ""
+        }`}
       onClick={onClick}
     >
-      {ping ? <Ping color="blue" /> : <></>}
+      {ping ? <Ping color="blue" /> : null}
       {icon}
       <p className="font-mono">{name}</p>
-    </div>
+    </button>
   );
 };
 

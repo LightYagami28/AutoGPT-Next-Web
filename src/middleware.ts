@@ -9,11 +9,12 @@ export const config = {
 
 function ipFallback(request: Request) {
   const xff = request.headers.get("x-forwarded-for");
-  return xff
-    ? Array.isArray(xff)
-      ? (xff[0] as string)
-      : xff.split(",")[0]
-    : "127.0.0.1";
+  if (!xff) {
+    return "127.0.0.1";
+  }
+
+  const xffValue = Array.isArray(xff) ? xff[0] : xff;
+  return (xffValue as string).split(",")[0] ?? "127.0.0.1";
 }
 
 async function shouldRateLimit(request: NextRequest): Promise<boolean> {

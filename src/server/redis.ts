@@ -18,4 +18,4 @@ const redisRateLimiter = new Ratelimit({
 
 export const isAllowed = env.UPSTASH_REDIS_REST_TOKEN
   ? async (id: string) => (await redisRateLimiter.limit(id)).success
-  : async (_: string) => Promise.resolve(true);
+  : (_: string) => Promise.resolve(true);

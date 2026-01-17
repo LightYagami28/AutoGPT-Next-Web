@@ -271,9 +271,11 @@ const MacWindowHeader = (props: HeaderProps) => {
 
       try {
         document.execCommand("copy");
-      } catch (err) { }
+      } catch {
+        // Copy command failed, fail silently
+      }
 
-      document.body.removeChild(textArea);
+      textArea.remove();
     }
   };
 

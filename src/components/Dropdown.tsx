@@ -60,12 +60,14 @@ const Dropdown = ({
         {isOpen && (
           <ul className="absolute right-0 top-full z-20 mt-1 max-h-48 w-full overflow-auto rounded-xl border-[2px] border-white/10 bg-[#3a3a3a] tracking-wider shadow-xl outline-0 transition-all ">
             {options.map((option) => (
-              <li
-                key={option}
-                className="cursor-pointer px-4 py-2 font-mono text-sm text-white/75 hover:bg-blue-500 md:text-lg"
-                onClick={() => handleOptionClick(option)}
-              >
-                {option}
+              <li key={option}>
+                <button
+                  type="button"
+                  className="w-full cursor-pointer px-4 py-2 font-mono text-sm text-white/75 hover:bg-blue-500 md:text-lg text-left"
+                  onClick={() => handleOptionClick(option)}
+                >
+                  {option}
+                </button>
               </li>
             ))}
           </ul>
