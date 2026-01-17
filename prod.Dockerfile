@@ -1,9 +1,9 @@
-FROM node:20-alpine AS base
+FROM node:25-alpine AS base
 
 # Step 1. Rebuild the source code only when needed
 FROM base AS builder
 
-RUN apk update && apk add --no-cache openssl dumb-init
+RUN apk update && apk add --no-cache openssl
 
 WORKDIR /app
 
@@ -153,8 +153,5 @@ ENV DISCORD_CLIENT_ID=$DISCORD_CLIENT_ID
 
 # Expose port
 EXPOSE 3000
-
-# Use dumb-init to handle signals properly
-ENTRYPOINT ["/usr/sbin/dumb-init", "--"]
 
 CMD ["sh", "entrypoint.sh"]

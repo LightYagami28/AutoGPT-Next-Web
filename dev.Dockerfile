@@ -1,6 +1,6 @@
-FROM node:20-alpine
+FROM node:25-alpine
 
-RUN apk update && apk add --no-cache openssl dumb-init
+RUN apk update && apk add --no-cache openssl
 
 WORKDIR /app
 
@@ -36,7 +36,5 @@ RUN npm pkg set scripts.postinstall="prisma generate"
 COPY . .
 
 EXPOSE 3000
-
-ENTRYPOINT ["/usr/sbin/dumb-init", "--"]
 
 CMD ["sh", "entrypoint.sh"]
