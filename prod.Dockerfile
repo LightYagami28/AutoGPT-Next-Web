@@ -1,9 +1,9 @@
-FROM node:19-alpine AS base
+FROM node:20-alpine AS base
 
 # Step 1. Rebuild the source code only when needed
 FROM base AS builder
 
-RUN apk update && apk add --no-cache openssl
+RUN apk update && apk add --no-cache openssl dumb-init
 
 WORKDIR /app
 
@@ -14,17 +14,11 @@ COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 # Prevent Husky errors by disabling the `prepare` script
 RUN npm pkg set scripts.prepare="exit 0"
 
-# set npm registry
-RUN npm config set registry 'https://registry.npmmirror.com/'
+# Install dependencies with npm ci for reproducibility
+RUN npm ci --verbose
 
-# Omit --production flag for TypeScript devDependencies
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i; \
-  # Allow install without lockfile, so example works even without Node.js installed locally
-  else echo "Warning: Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
-  fi
+# Generate Prisma client for build stage
+RUN npx prisma generate
 
 # Copy the rest of the application code
 COPY . .
@@ -157,8 +151,10 @@ ENV DISCORD_CLIENT_ID=$DISCORD_CLIENT_ID
 # Uncomment the following line to disable telemetry at run time
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-# Note: Don't expose ports here, Compose will handle that for us
+# Expose port
+EXPOSE 3000
 
-ENTRYPOINT ["sh", "entrypoint.sh"]
+# Use dumb-init to handle signals properly
+ENTRYPOINT ["/usr/sbin/dumb-init", "--"]
 
-CMD ["node", "server.js"]
+CMD ["sh", "entrypoint.sh"]
