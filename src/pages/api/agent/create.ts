@@ -35,7 +35,9 @@ const handler = async (request: NextRequest) => {
     );
 
     return NextResponse.json({ newTasks });
-  } catch (e) {}
+  } catch (e) {
+    console.error('Error in create tasks agent:', e);
+  }
 
   return serverError();
 };

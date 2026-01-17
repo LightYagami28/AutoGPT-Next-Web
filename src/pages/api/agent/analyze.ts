@@ -23,7 +23,9 @@ const handler = async (request: NextRequest) => {
     return NextResponse.json({
       response: response,
     });
-  } catch (e) {}
+  } catch (e) {
+    console.error('Error in analyze agent:', e);
+  }
 
   return serverError();
 };

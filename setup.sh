@@ -19,6 +19,7 @@ is_valid_sk_key() {
   local api_key=$1
   local pattern="^sk-[a-zA-Z0-9]{48}$"
   [[ $api_key =~ $pattern ]] && return 0 || return 1
+  return 0
 }
 
 # Set value for NEXT_PUBLIC_WEB_SEARCH_ENABLED
@@ -39,6 +40,7 @@ select_web_search_enabled() {
       *) echo "${RED}Please enter a valid option.${NC}" ;;
     esac
   done
+  return 0
 }
 
 # Ask for user input and validate variable values

@@ -87,6 +87,7 @@ export const isTask = (value: unknown): value is Task => {
     taskSchema.parse(value);
     return true;
   } catch (err) {
+    console.debug('Value is not a valid Task:', err);
     return false;
   }
 };

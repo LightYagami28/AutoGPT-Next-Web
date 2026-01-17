@@ -22,9 +22,9 @@ export default function Dialog({
   }
 
   return (
-    <div
+    <dialog
+      open
       className="fixed inset-0 z-40 flex items-center justify-center overflow-y-auto overflow-x-hidden bg-black/70 p-3 font-mono text-white outline-none transition-all"
-      role="dialog"
       aria-modal="true"
     >
       <button
@@ -37,7 +37,8 @@ export default function Dialog({
         {/*content*/}
         <div
           className="relative z-50 flex w-full flex-col rounded-lg border-0 bg-[#3a3a3a] shadow-lg outline-none focus:outline-none"
-          onClick={(e) => e.stopPropagation()} // Avoid closing the modal
+          role="document"
+          tabIndex={-1}
         >
           {/*header*/}
           <div className="flex items-start justify-between rounded-t border-b-2 border-solid border-white/20 p-5">
@@ -68,6 +69,6 @@ export default function Dialog({
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }

@@ -36,6 +36,20 @@ import { i18n } from "next-i18next";
 const TIMEOUT_LONG = 1000;
 const TIMOUT_SHORT = 800;
 
+interface AutonomousAgentOptions {
+  name: string;
+  goal: string;
+  renderMessage: (message: Message) => void;
+  handlePause: (opts: { agentPlaybackControl?: AgentPlaybackControl }) => void;
+  shutdown: () => void;
+  modelSettings: ModelSettings;
+  mode: AgentMode;
+  customLanguage: string;
+  guestSettings: GuestSettings;
+  session?: Session;
+  playbackControl?: AgentPlaybackControl;
+}
+
 class AutonomousAgent {
   name: string;
   goal: string;
@@ -55,35 +69,20 @@ class AutonomousAgent {
   numLoops = 0;
   currentTask?: Task;
 
-  constructor(
-    // @ts-ignore - Constructor has many parameters, but they're all necessary for initialization
-    name: string,
-    goal: string,
-    renderMessage: (message: Message) => void,
-    handlePause: (opts: {
-      agentPlaybackControl?: AgentPlaybackControl;
-    }) => void,
-    shutdown: () => void,
-    modelSettings: ModelSettings,
-    mode: AgentMode,
-    customLanguage: string,
-    guestSettings: GuestSettings,
-    session?: Session,
-    playbackControl?: AgentPlaybackControl
-  ) {
-    this.name = name;
-    this.goal = goal;
-    this.renderMessage = renderMessage;
-    this.handlePause = handlePause;
-    this.shutdown = shutdown;
-    this.modelSettings = modelSettings;
-    this.customLanguage = customLanguage;
-    this.guestSettings = guestSettings;
-    this.session = session;
+  constructor(options: AutonomousAgentOptions) {
+    this.name = options.name;
+    this.goal = options.goal;
+    this.renderMessage = options.renderMessage;
+    this.handlePause = options.handlePause;
+    this.shutdown = options.shutdown;
+    this.modelSettings = options.modelSettings;
+    this.customLanguage = options.customLanguage;
+    this.guestSettings = options.guestSettings;
+    this.session = options.session;
     this._id = v4();
-    this.mode = mode || AUTOMATIC_MODE;
+    this.mode = options.mode || AUTOMATIC_MODE;
     this.playbackControl =
-      playbackControl || this.mode == PAUSE_MODE ? AGENT_PAUSE : AGENT_PLAY;
+      options.playbackControl || this.mode == PAUSE_MODE ? AGENT_PAUSE : AGENT_PLAY;
     this.currentTask = undefined;
   }
 

@@ -11,14 +11,10 @@ WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 
 
-# Prevent Husky errors by disabling the `prepare` script
-RUN npm pkg set scripts.prepare="exit 0"
-
-# Install dependencies with npm ci for reproducibility
-RUN npm ci --verbose
-
-# Generate Prisma client for build stage
-RUN npx prisma generate
+# Prevent Husky errors, install dependencies, and generate Prisma client
+RUN npm pkg set scripts.prepare="exit 0" && \
+  npm ci --verbose && \
+  npx prisma generate
 
 # Copy the rest of the application code
 COPY . .
@@ -88,8 +84,8 @@ FROM base AS runner
 WORKDIR /app
 
 # Don't run production as root
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+RUN addgroup --system --gid 1001 nodejs && \
+  adduser --system --uid 1001 nextjs
 USER nextjs
 
 COPY --from=builder /app/public ./public

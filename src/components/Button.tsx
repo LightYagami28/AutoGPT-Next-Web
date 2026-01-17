@@ -25,10 +25,12 @@ const Button = forwardRef(
       try {
         Promise.resolve(props.onClick?.(e)).then(() => {
           if (props.loader === true) setLoading(false);
-        }).catch(() => {
+        }).catch((error) => {
+          console.error('Button onClick error:', error);
           setLoading(false);
         });
-      } catch (e) {
+      } catch (error) {
+        console.error('Button onClick error:', error);
         setLoading(false);
       }
     };

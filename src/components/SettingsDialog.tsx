@@ -195,13 +195,13 @@ export const SettingsDialog: React.FC<{
         <Trans i18nKey="gpt4-notice" ns="settings">
           <b>
             To use the GPT-4 model, you need to also provide the API key for
-            GPT-4. You can request for it&nbsp;
+            GPT-4. You can request for it{" "}
             <a
               href="https://openai.com/waitlist/gpt-4-api"
               className="text-blue-500"
             >
               here
-            </a>{" "}
+            </a>{' '}
             . (ChatGPT Plus subscription will not work)
           </b>
         </Trans>
@@ -254,13 +254,13 @@ export const SettingsDialog: React.FC<{
       <Trans i18nKey="api-key-notice" ns="settings">
         <strong className="mt-10">
           NOTE: To get a key, sign up for an OpenAI account and visit the
-          following
+          following{" "}
           <a
             href="https://platform.openai.com/account/api-keys"
             className="text-blue-500"
           >
             link.
-          </a>{" "}
+          </a>{' '}
           This key is only used in the current browser session
         </strong>
       </Trans>

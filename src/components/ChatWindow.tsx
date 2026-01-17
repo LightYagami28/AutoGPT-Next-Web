@@ -261,18 +261,26 @@ const MacWindowHeader = (props: HeaderProps) => {
 
     const text = element.innerText;
     if (navigator.clipboard) {
-      void navigator.clipboard.writeText(text);
+      void navigator.clipboard.writeText(text).catch((err) => {
+        console.error('Failed to copy text:', err);
+      });
     } else {
+      // Fallback for older browsers
       const textArea = document.createElement("textarea");
       textArea.value = text;
+      textArea.style.position = "fixed";
+      textArea.style.opacity = "0";
       document.body.appendChild(textArea);
       textArea.focus();
       textArea.select();
 
       try {
-        document.execCommand("copy");
-      } catch {
-        // Copy command failed, fail silently
+        const successful = document.execCommand("copy");
+        if (!successful) {
+          console.error('Copy command was unsuccessful');
+        }
+      } catch (err) {
+        console.error('Failed to copy text:', err);
       }
 
       textArea.remove();
@@ -418,7 +426,7 @@ const ChatMessage = ({
             // Link to the FAQ if it is a shutdown message
             message.type == MESSAGE_TYPE_SYSTEM &&
             (message.value.toLowerCase().includes("shut") ||
-              message.value.toLowerCase().includes("error")) && <FAQ />
+              message.value.toLowerCase().includes("error")) && <FaqMessage />
           }
         </>
       )}
@@ -441,7 +449,7 @@ const getMessagePrefix = (message: Message, t: (key: string) => string): string 
   return "";
 };
 
-const FAQ = () => {
+const Faq = () => {
   return (
     <Trans i18nKey="faq" ns="chat">
       <p>
@@ -452,6 +460,7 @@ const FAQ = () => {
         >
           Issue
         </a>
+        {' '}
       </p>
     </Trans>
   );

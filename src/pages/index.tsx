@@ -119,18 +119,18 @@ const Home: NextPage = () => {
       return;
     }
 
-    const agent = new AutonomousAgent(
-      name.trim(),
-      goalInput.trim(),
-      handleAddMessage,
+    const agent = new AutonomousAgent({
+      name: name.trim(),
+      goal: goalInput.trim(),
+      renderMessage: handleAddMessage,
       handlePause,
-      () => setAgent(null),
-      settingsModel.settings,
-      agentMode,
+      shutdown: () => setAgent(null),
+      modelSettings: settingsModel.settings,
+      mode: agentMode,
       customLanguage,
-      { isValidGuest, isGuestMode },
-      session ?? undefined
-    );
+      guestSettings: { isValidGuest, isGuestMode },
+      session: session ?? undefined,
+    });
     setAgent(agent);
     setHasSaved(false);
     resetAllMessageSlices();

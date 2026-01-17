@@ -26,7 +26,9 @@ const handler = async (request: NextRequest) => {
     return NextResponse.json({
       response: response,
     });
-  } catch (e) {}
+  } catch (e) {
+    console.error('Error in execute task agent:', e);
+  }
 
   return serverError();
 };

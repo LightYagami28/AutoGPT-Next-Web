@@ -16,7 +16,7 @@ const stringToBoolean = () => {
   return z.preprocess((str) => str === "true", z.boolean());
 };
 const stringToNumber = () => {
-  return z.preprocess((str) => Number(str), z.number());
+  return z.preprocess(Number, z.number());
 };
 
 const validateDataBaseUrl = () => {
@@ -50,7 +50,7 @@ export const serverSchema = z.object({
   NEXTAUTH_URL: validateNextUrl(),
   OPENAI_API_KEY: z.string(),
 
-  // OAuth provider credentials - should only be set via environment variables
+  // OAuth provider credentials
   GOOGLE_CLIENT_ID: requiredAuthEnabledForProduction(),
   GOOGLE_CLIENT_SECRET: requiredAuthEnabledForProduction(),
   GITHUB_CLIENT_ID: requiredAuthEnabledForProduction(),

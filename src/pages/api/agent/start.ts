@@ -18,7 +18,9 @@ const handler = async (request: NextRequest) => {
       customLanguage
     );
     return NextResponse.json({ newTasks });
-  } catch (e) {}
+  } catch (e) {
+    console.error('Error in start goal agent:', e);
+  }
 
   return serverError();
 };

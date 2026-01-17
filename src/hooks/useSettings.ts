@@ -39,7 +39,9 @@ const loadSettings = (): ModelSettings => {
         defaultSettings[key] = value;
       }
     });
-  } catch (error) { }
+  } catch (error) {
+    console.error('Failed to parse settings from localStorage:', error);
+  }
 
   if (!isGuestMode() && !defaultSettings.customApiKey) {
     return { ...DEFAULT_SETTINGS };
