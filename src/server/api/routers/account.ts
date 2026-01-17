@@ -4,9 +4,8 @@ import { env } from "../../../env/server.mjs";
 import { prisma } from "../../db";
 import { getCustomerId } from "../../../utils/stripe-utils";
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 const stripe = new Stripe(env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2023-08-16",
+  apiVersion: "2025-12-15.clover",
 });
 
 export const accountRouter = createTRPCRouter({
@@ -23,12 +22,10 @@ export const accountRouter = createTRPCRouter({
       mode: "subscription",
       line_items: [
         {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
           price: env.STRIPE_SUBSCRIPTION_PRICE_ID ?? "",
           quantity: 1,
         },
       ],
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       customer: user.customerId ?? undefined,
       customer_email: user.email ?? undefined,
       client_reference_id: ctx.session?.user?.id,

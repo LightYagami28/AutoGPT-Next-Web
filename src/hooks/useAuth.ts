@@ -1,5 +1,5 @@
 import type { Session } from "next-auth";
-import { signIn, SignInResponse, signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { z } from "zod";
@@ -8,9 +8,11 @@ const UUID_KEY = "uuid";
 
 type Provider = "google" | "github";
 
+type SignInResult = ReturnType<typeof signIn>;
+
 interface Auth {
-  signIn: (provider?: Provider) => any;
-  signOut: () => any;
+  signIn: (provider?: Provider) => SignInResult;
+  signOut: () => Promise<void>;
   status: "authenticated" | "unauthenticated" | "loading";
   session: Session | null;
 }
@@ -29,12 +31,13 @@ export function useAuth(): Auth {
       .catch(() => undefined);
   }, [session, status]);
 
-  const handleSignIn = async () => await signIn();
+  const handleSignIn = async (provider?: Provider): SignInResult =>
+    signIn(provider);
 
   const handleSignOut = async () => {
-    return await signOut({
+    await signOut({
       callbackUrl: "/",
-    }).catch();
+    });
   };
 
   return {

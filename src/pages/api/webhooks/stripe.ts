@@ -1,6 +1,7 @@
-import { buffer } from "micro";
+import { buffer, type RequestHandler } from "micro";
 import Cors from "micro-cors";
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiHandler } from "next";
 
 import Stripe from "stripe";
 import { env } from "../../../env/server.mjs";
@@ -8,7 +9,7 @@ import { prisma } from "../../../server/db";
 import { getCustomerEmail } from "../../../utils/stripe-utils";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2023-08-16",
+  apiVersion: "2025-12-15.clover",
 });
 
 const webhookSecret = env.STRIPE_WEBHOOK_SECRET ?? "";
@@ -46,7 +47,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     if (err instanceof Error) console.log(err);
     console.log(`❌ Error message: ${errorMessage}`);
-    res.status(400).send(`Webhook Error: ${errorMessage}`);
+    res.status(400).json({ error: "Webhook signature verification failed" });
     return;
   }
 
@@ -97,5 +98,8 @@ const updateUserSubscription = async (
   });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-export default cors(webhookHandler as any);
+const corsWrappedHandler = cors(
+  webhookHandler as unknown as RequestHandler
+) as unknown as NextApiHandler;
+
+export default corsWrappedHandler;

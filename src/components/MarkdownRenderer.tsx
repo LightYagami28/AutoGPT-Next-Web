@@ -1,12 +1,25 @@
 import React, { useCallback, useState } from "react";
 import { FaCopy } from "react-icons/fa";
-import type { ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/default.css";
 
-const MarkdownRenderer = ({ children }) => (
+// Component definitions outside of parent to avoid re-renders
+const MarkdownParagraph = (props: ComponentPropsWithoutRef<"p">) => (
+  <p className="mb-4">{props.children}</p>
+);
+
+const MarkdownList = (props: ComponentPropsWithoutRef<"ul">) => (
+  <ul className="ml-8 list-disc">{props.children}</ul>
+);
+
+const MarkdownOrderedList = (props: ComponentPropsWithoutRef<"ol">) => (
+  <ol className="ml-8 list-decimal">{props.children}</ol>
+);
+
+const MarkdownRenderer = ({ children }: { children: string }) => (
   <ReactMarkdown
     remarkPlugins={[remarkGfm]}
     rehypePlugins={[rehypeHighlight]}
@@ -14,23 +27,23 @@ const MarkdownRenderer = ({ children }) => (
       pre: CustomPre,
       code: CustomCodeBlock,
       a: (props) => CustomLink({ children: props.children, href: props.href }),
-      p: (props) => <p className="mb-4">{props.children}</p>,
-      ul: (props) => <ul className="ml-8 list-disc">{props.children}</ul>,
-      ol: (props) => <ol className="ml-8 list-decimal">{props.children}</ol>,
+      p: MarkdownParagraph,
+      ul: MarkdownList,
+      ol: MarkdownOrderedList,
     }}
   >
     {children}
   </ReactMarkdown>
 );
 
-const CustomPre = ({ children }: { children: ReactNode }) => {
+const CustomPre = ({ children, ...props }: ComponentPropsWithoutRef<"pre">) => {
   const [isCopied, setIsCopied] = useState(false);
 
   const code = React.Children.toArray(children).find(isValidCustomCodeBlock);
 
   const language: string =
-    code && code.props.className
-      ? extractLanguageName(code.props.className.replace("hljs ", ""))
+    code?.props?.className
+      ? extractLanguageName((code.props.className ?? "").replace("hljs ", ""))
       : "";
 
   const handleCopyClick = useCallback(() => {
@@ -56,26 +69,27 @@ const CustomPre = ({ children }: { children: ReactNode }) => {
           {isCopied ? "Copied!" : "Copy Code"}
         </button>
       </div>
-      <pre className="rounded-t-[0]">{children}</pre>
+      <pre className="rounded-t-[0]" {...props}>
+        {children}
+      </pre>
     </div>
   );
 };
 
-interface CustomCodeBlockProps {
+type CustomCodeBlockProps = ComponentPropsWithoutRef<"code"> & {
   inline?: boolean;
-  className?: string;
-  children: ReactNode;
-}
+};
 
 const CustomCodeBlock = ({
   inline,
   className,
   children,
+  ...props
 }: CustomCodeBlockProps) => {
   // Inline code blocks will be placed directly within a paragraph
   if (inline) {
     return (
-      <code className="rounded bg-gray-200 px-1 py-[1px] text-black">
+      <code className="rounded bg-gray-200 px-1 py-[1px] text-black" {...props}>
         {children}
       </code>
     );
@@ -83,14 +97,18 @@ const CustomCodeBlock = ({
 
   const language = className ? className.replace("language-", "") : "plaintext";
 
-  return <code className={`hljs ${language}`}>{children}</code>;
+  return (
+    <code className={`hljs ${language}`} {...props}>
+      {children}
+    </code>
+  );
 };
 
-const CustomLink = ({ children, href }) => {
+const CustomLink = ({ children, href }: { children: ReactNode; href?: string }) => {
   return (
     <a
       className="link overflow-hidden"
-      href={href as string}
+      href={href ?? ""}
       target="_blank"
       rel="noopener noreferrer"
     >
@@ -123,8 +141,8 @@ const extractTextFromNode = (node: React.ReactNode): string => {
   }
 
   if (React.isValidElement(node)) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
-    return extractTextFromNode(node.props.children);
+    const childProps = node.props as { children?: React.ReactNode };
+    return extractTextFromNode(childProps.children ?? "");
   }
 
   return "";

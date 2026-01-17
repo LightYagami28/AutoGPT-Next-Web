@@ -1,5 +1,5 @@
-import { OpenAI } from "langchain/llms/openai";
-import { PromptTemplate } from "langchain/prompts";
+import { PromptTemplate } from "@langchain/core/prompts";
+import { ChatOpenAI } from "@langchain/openai";
 import type { ModelSettings } from "./types";
 import { GPT_35_TURBO } from "./constants";
 
@@ -19,17 +19,23 @@ export const createModel = (settings: ModelSettings) => {
   }
 
   const options = {
-    openAIApiKey: _settings?.customApiKey || getServerSideKey(),
-    temperature: _settings?.customTemperature || 0.9,
-    modelName: _settings?.customModelName || GPT_35_TURBO,
-    maxTokens: _settings?.customMaxTokens || 400,
+    apiKey: _settings?.customApiKey || getServerSideKey(),
+    temperature: _settings?.customTemperature ?? 0.9,
+    model: _settings?.customModelName || GPT_35_TURBO,
+    maxTokens: _settings?.customMaxTokens ?? 400,
+    baseURL: _settings?.customEndPoint || undefined,
   };
 
-  const baseOptions = {
-    basePath: _settings?.customEndPoint || undefined,
+  const model = new ChatOpenAI(options);
+  // Preserve legacy fields used in existing code/tests
+  const legacyModel = model as ChatOpenAI & {
+    modelName?: string;
+    maxTokens?: number;
   };
+  legacyModel.modelName = options.model;
+  legacyModel.maxTokens = options.maxTokens;
 
-  return new OpenAI(options, baseOptions);
+  return legacyModel;
 };
 
 export const startGoalPrompt = new PromptTemplate({

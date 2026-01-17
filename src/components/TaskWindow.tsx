@@ -1,15 +1,11 @@
 import React from "react";
 import FadeIn from "./motions/FadeIn";
 import Expand from "./motions/expand";
-import {
-  Task,
-  MESSAGE_TYPE_TASK,
-  TASK_STATUS_STARTED,
-} from "../types/agentTypes";
+import type { Task as TaskType } from "../types/agentTypes";
+import { MESSAGE_TYPE_TASK, TASK_STATUS_STARTED } from "../types/agentTypes";
 import { getMessageContainerStyle, getTaskStatusIcon } from "./utils/helpers";
-import { useMessageStore } from "./stores";
+import { useMessageStore, useAgentStore } from "./stores";
 import { FaListAlt, FaTimesCircle } from "react-icons/fa";
-import { useAgentStore } from "./stores";
 import clsx from "clsx";
 import Input from "./Input";
 import Button from "./Button";
@@ -39,15 +35,15 @@ export const TaskWindow = () => {
       </div>
       <div className="flex h-full w-full flex-col gap-2 px-1 py-1">
         <div className="window-heights flex w-full flex-col gap-2 overflow-y-auto overflow-x-hidden pr-1">
-          {tasks.map((task, i) => (
-            <Task key={i} task={task} />
+          {tasks.map((task) => (
+            <TaskItem key={task.taskId} task={task} />
           ))}
         </div>
         <div className="flex flex-row gap-1">
           <Input
             value={customTask}
             onChange={(e) => setCustomTask(e.target.value)}
-            placeholder={t("custom-task") as string}
+            placeholder={t("custom-task")}
             small
           />
           <Button
@@ -63,7 +59,7 @@ export const TaskWindow = () => {
   );
 };
 
-const Task = ({ task }: { task: Task }) => {
+const TaskItem = ({ task }: { task: TaskType }) => {
   const isAgentStopped = useAgentStore.use.isAgentStopped();
   const deleteTask = useMessageStore.use.deleteTask();
   const isTaskDeletable =

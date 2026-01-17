@@ -1,7 +1,6 @@
-import { Tool } from "langchain/tools";
 import type { ModelSettings } from "../../utils/types";
-import { LLMChain } from "langchain/chains";
 import { createModel, summarizeSearchSnippets } from "../../utils/prompts";
+import { toText } from "../../utils/helpers";
 
 /**
  * Wrapper around Serper adapted from LangChain: https://github.com/hwchase17/langchainjs/blob/main/langchain/src/tools/serper.ts
@@ -10,7 +9,7 @@ import { createModel, summarizeSearchSnippets } from "../../utils/prompts";
  *
  * To use, you should have the SERP_API_KEY environment variable set.
  */
-export class Serper extends Tool {
+export class Serper {
   // Required values for Tool
   name = "search";
   description =
@@ -21,8 +20,6 @@ export class Serper extends Tool {
   protected goal: string;
 
   constructor(modelSettings: ModelSettings, goal: string) {
-    super();
-
     this.key = process.env.SERP_API_KEY ?? "";
     this.modelSettings = modelSettings;
     this.goal = goal;
@@ -61,7 +58,7 @@ export class Serper extends Tool {
     }
 
     if (searchResult.knowledgeGraph?.description) {
-      // TODO: use Title description, attributes
+      // Use knowledge graph description as primary information source
       return searchResult.knowledgeGraph.description;
     }
 
@@ -86,7 +83,7 @@ export class Serper extends Tool {
 
   async callSerper(input: string) {
     const options = {
-      method: "POST",
+      method: "POST" as const,
       headers: {
         "X-API-KEY": this.key,
         "Content-Type": "application/json",
@@ -96,13 +93,19 @@ export class Serper extends Tool {
       }),
     };
 
-    const res = await fetch("https://google.serper.dev/search", options);
+    try {
+      const res = await fetch("https://google.serper.dev/search", options);
 
-    if (!res.ok) {
-      console.error(`Got ${res.status} error from serper: ${res.statusText}`);
+      if (!res.ok) {
+        console.error(`Got ${res.status} error from serper: ${res.statusText}`);
+      }
+
+      return res;
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
+      console.error("Serper API call failed:", errorMsg);
+      throw error;
     }
-
-    return res;
   }
 }
 
@@ -151,13 +154,12 @@ const summarizeSnippets = async (
   query: string,
   snippets: string[]
 ) => {
-  const completion = await new LLMChain({
-    llm: createModel(modelSettings),
-    prompt: summarizeSearchSnippets,
-  }).call({
+  const model = createModel(modelSettings);
+  const formatted = await summarizeSearchSnippets.format({
     goal,
     query,
     snippets,
   });
-  return completion.text as string;
+  const output = await model.invoke(formatted);
+  return toText(output);
 };

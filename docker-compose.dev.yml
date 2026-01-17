@@ -1,9 +1,8 @@
-version: '3'
+version: "3.9"
 
 volumes:
   db:
-  src:
-  public:
+  node_modules:
 
 services:
   autogpt:
@@ -13,17 +12,24 @@ services:
       args:
         NEXTAUTH_URL: http://localhost:3000
         DATABASE_URL: file:./db.sqlite
-        SKIP_ENV_VALIDATION: 1 # omit this property to enable schema validation for the environment variables
-    container_name: autogpt
+        SKIP_ENV_VALIDATION: 1
+    container_name: autogpt-dev
     environment:
-     OPENAI_API_KEY: ${OPENAI_API_KEY} # openai api key
-     NEXT_PUBLIC_WEB_SEARCH_ENABLED: ${NEXT_PUBLIC_WEB_SEARCH_ENABLED} # enable web search
-     SERP_API_KEY: ${SERP_API_KEY} # serp api key
-     NEXT_PUBLIC_GUEST_KEY: ${NEXT_PUBLIC_GUEST_KEY} #  guest key
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      NEXT_PUBLIC_WEB_SEARCH_ENABLED: ${NEXT_PUBLIC_WEB_SEARCH_ENABLED}
+      SERP_API_KEY: ${SERP_API_KEY}
+      NEXT_PUBLIC_GUEST_KEY: ${NEXT_PUBLIC_GUEST_KEY}
+      NODE_ENV: development
     ports:
-      - 3000:3000
+      - "3000:3000"
     volumes:
-      - src:/app/src
-      - public:/app/public
+      - .:/app
+      - node_modules:/app/node_modules
       - db:/app/db
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

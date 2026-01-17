@@ -6,25 +6,37 @@ import {
   analyzeTaskPrompt,
 } from "../utils/prompts";
 import type { ModelSettings } from "../utils/types";
+import type { PromptTemplate } from "@langchain/core/prompts";
 import { env } from "../env/client.mjs";
-import { LLMChain } from "langchain/chains";
-import { extractTasks } from "../utils/helpers";
+import { extractTasks, toText } from "../utils/helpers";
 import { Serper } from "./custom-tools/serper";
+
+const runPrompt = async (
+  prompt: PromptTemplate,
+  variables: Record<string, unknown>,
+  modelSettings: ModelSettings
+) => {
+  const model = createModel(modelSettings);
+  const formatted = await prompt.format(variables);
+  const output = await model.invoke(formatted);
+  return toText(output);
+};
 
 async function startGoalAgent(
   modelSettings: ModelSettings,
   goal: string,
   customLanguage: string
 ) {
-  const completion = await new LLMChain({
-    llm: createModel(modelSettings),
-    prompt: startGoalPrompt,
-  }).call({
-    goal,
-    customLanguage,
-  });
-  console.log("Goal", goal, "Completion:" + (completion.text as string));
-  return extractTasks(completion.text as string, []);
+  const completionText = await runPrompt(
+    startGoalPrompt,
+    {
+      goal,
+      customLanguage,
+    },
+    modelSettings
+  );
+  console.log("Goal", goal, "Completion:" + completionText);
+  return extractTasks(completionText, []);
 }
 
 async function analyzeTaskAgent(
@@ -33,22 +45,27 @@ async function analyzeTaskAgent(
   task: string
 ) {
   const actions = ["reason", "search"];
-  const completion = await new LLMChain({
-    llm: createModel(modelSettings),
-    prompt: analyzeTaskPrompt,
-  }).call({
-    goal,
-    actions,
-    task,
-  });
+  const completionText = await runPrompt(
+    analyzeTaskPrompt,
+    {
+      goal,
+      actions,
+      task,
+    },
+    modelSettings
+  );
 
-  console.log("Analysis completion:\n", completion.text);
+  console.log("Analysis completion:\n", completionText);
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return JSON.parse(completion.text) as Analysis;
-  } catch (e) {
-    console.error("Error parsing analysis", e);
-    // Default to reasoning
+    const parsed = JSON.parse(completionText) as unknown;
+    if (typeof parsed === "object" && parsed !== null && "action" in parsed && "arg" in parsed) {
+      return parsed as Analysis;
+    }
+    console.warn("Invalid analysis structure, using default");
+    return DefaultAnalysis;
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : String(error);
+    console.error("Error parsing analysis:", errorMsg);
     return DefaultAnalysis;
   }
 }
@@ -68,31 +85,30 @@ async function executeTaskAgent(
   goal: string,
   task: string,
   analysis: Analysis,
-  customLanguage:string
+  customLanguage: string
 ) {
   console.log("Execution analysis:", analysis);
 
-  if (analysis.action == "search" && process.env.SERP_API_KEY) {
+  if (analysis.action === "search" && process.env.SERP_API_KEY) {
     return await new Serper(modelSettings, goal)._call(analysis.arg);
   }
 
-  const completion = await new LLMChain({
-    llm: createModel(modelSettings),
-    prompt: executeTaskPrompt,
-  }).call({
-    goal,
-    task,
-    customLanguage
-  });
+  const completionText = await runPrompt(
+    executeTaskPrompt,
+    {
+      goal,
+      task,
+      customLanguage,
+    },
+    modelSettings
+  );
 
   // For local development when no SERP API Key provided
-  if (analysis.action == "search" && !process.env.SERP_API_KEY) {
-    return `\`ERROR: Failed to search as no SERP_API_KEY is provided in ENV.\` \n\n${
-      completion.text as string
-    }`;
+  if (analysis.action === "search" && !process.env.SERP_API_KEY) {
+    return `\`ERROR: Failed to search as no SERP_API_KEY is provided in ENV.\` \n\n${completionText}`;
   }
 
-  return completion.text as string;
+  return completionText;
 }
 
 async function createTasksAgent(
@@ -104,18 +120,19 @@ async function createTasksAgent(
   completedTasks: string[] | undefined,
   customLanguage: string,
 ) {
-  const completion = await new LLMChain({
-    llm: createModel(modelSettings),
-    prompt: createTasksPrompt,
-  }).call({
-    goal,
-    tasks,
-    lastTask,
-    result,
-    customLanguage
-  });
+  const completionText = await runPrompt(
+    createTasksPrompt,
+    {
+      goal,
+      tasks,
+      lastTask,
+      result,
+      customLanguage,
+    },
+    modelSettings
+  );
 
-  return extractTasks(completion.text as string, completedTasks || []);
+  return extractTasks(completionText, completedTasks || []);
 }
 
 interface AgentService {
@@ -156,44 +173,23 @@ const OpenAIAgentService: AgentService = {
 };
 
 const MockAgentService: AgentService = {
-  startGoalAgent: async (modelSettings, goal, customLanguage) => {
-    return await new Promise((resolve) => resolve(["Task 1"]));
-  },
+  startGoalAgent: () => Promise.resolve(["Task 1"]),
 
-  createTasksAgent: async (
-    modelSettings: ModelSettings,
-    goal: string,
-    tasks: string[],
-    lastTask: string,
-    result: string,
-    completedTasks: string[] | undefined,
-    customLanguage: string,
-  ) => {
-    return await new Promise((resolve) => resolve(["Task 4"]));
-  },
+  createTasksAgent: () => Promise.resolve(["Task 4"]),
 
-  analyzeTaskAgent: async (
-    modelSettings: ModelSettings,
-    goal: string,
-    task: string
-  ) => {
-    return await new Promise((resolve) =>
-      resolve({
-        action: "reason",
-        arg: "Mock analysis",
-      })
-    );
-  },
+  analyzeTaskAgent: () =>
+    Promise.resolve({
+      action: "reason",
+      arg: "Mock analysis",
+    }),
 
-  executeTaskAgent: async (
+  executeTaskAgent: (
     modelSettings: ModelSettings,
     goal: string,
     task: string,
     analysis: Analysis,
     customLanguage: string,
-  ) => {
-    return await new Promise((resolve) => resolve("Result: " + task));
-  },
+  ) => Promise.resolve("Result: " + task),
 };
 
 export default env.NEXT_PUBLIC_FF_MOCK_MODE_ENABLED

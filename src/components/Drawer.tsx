@@ -21,7 +21,6 @@ import { env } from "../env/client.mjs";
 import { useTranslation } from "next-i18next";
 import { useRouter } from "next/router";
 import { api } from "../utils/api";
-import { signIn } from "next-auth/react";
 import { authEnabled } from "../utils/env-helper";
 
 const Drawer = ({
@@ -60,8 +59,16 @@ const Drawer = ({
     };
   }, []);
 
+  const handleSignIn = () => {
+    void signIn();
+  };
+
+  const handleSignOut = () => {
+    void signOut();
+  };
+
   const sub = api.account.subscribe.useMutation({
-    onSuccess: async (url: any) => {
+    onSuccess: async (url: string | null) => {
       if (!url) return;
       await router.push(url);
     },
@@ -72,7 +79,7 @@ const Drawer = ({
   });
 
   const manage = api.account.manage.useMutation({
-    onSuccess: async (url: any) => {
+    onSuccess: async (url: string | null) => {
       if (!url) return;
       await router.push(url);
     },
@@ -132,7 +139,11 @@ const Drawer = ({
         <div className="flex flex-col gap-1">
           <hr className="my-5 border-white/20" />
           {authEnabled && (
-            <AuthItem session={session} signIn={signIn} signOut={signOut} />
+            <AuthItem
+              session={session}
+              signIn={handleSignIn}
+              signOut={handleSignOut}
+            />
           )}
           <DrawerItem
             icon={<FaQuestionCircle />}
@@ -188,9 +199,10 @@ const Drawer = ({
           {env.NEXT_PUBLIC_FF_SUB_ENABLED ||
             (router.query.pro && (
               <ProItem
-                sub={sub.mutate}
-                manage={manage.mutate}
+                sub={sub.mutateAsync}
+                manage={manage.mutateAsync}
                 session={session}
+                signIn={signIn}
               />
             ))}
           <hr className="my-2 border-white/20" />
@@ -208,7 +220,7 @@ interface DrawerItemProps
   icon: React.ReactNode;
   text: string;
   border?: boolean;
-  onClick?: () => any;
+  onClick?: () => void | Promise<void>;
   className?: string;
   small?: boolean;
 }
@@ -241,7 +253,10 @@ const DrawerItem = (props: DrawerItemProps) => {
           border && "border-[1px] border-white/20",
           `${className || ""}`,
         )}
-        onClick={onClick}
+        onClick={() => {
+          if (!onClick) return;
+          void onClick();
+        }}
       >
         {icon}
         <span className="text-md ml-4">{t(text)}</span>
@@ -264,13 +279,15 @@ const AuthItem: React.FC<{
 
 const ProItem: React.FC<{
   session: Session | null;
-  sub: () => any;
-  manage: () => any;
-}> = ({ sub, manage, session }) => {
+  sub: () => Promise<string | null>;
+  manage: () => Promise<string | null>;
+  signIn: () => Promise<unknown>;
+}> = ({ sub, manage, session, signIn }) => {
   const text = session?.user?.subscriptionId ? "Account" : "Go Pro";
   let icon = session?.user ? <FaUser /> : <FaRocket />;
   if (session?.user?.image) {
     icon = (
+      // eslint-disable-next-line @next/next/no-img-element
       <img
         src={session?.user.image}
         className="h-6 w-6 rounded-full"
@@ -283,16 +300,21 @@ const ProItem: React.FC<{
     <DrawerItem
       icon={icon}
       text={text}
-      onClick={async () => {
-        if (!session?.user) {
-          void (await signIn());
-        }
+      onClick={() => {
+        const handleClick = async () => {
+          if (!session?.user) {
+            await signIn();
+            return;
+          }
 
-        if (session?.user.subscriptionId) {
-          void manage();
-        } else {
-          void sub();
-        }
+          if (session?.user.subscriptionId) {
+            await manage();
+          } else {
+            await sub();
+          }
+        };
+
+        void handleClick();
       }}
     />
   );

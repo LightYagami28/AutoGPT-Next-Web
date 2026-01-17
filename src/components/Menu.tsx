@@ -1,16 +1,16 @@
-import type { ReactNode } from "react";
+import type { ReactElement, ReactNode } from "react";
 import { Fragment } from "react";
 import { Menu as MenuPrimitive, Transition } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 import clsx from "clsx";
 
 interface MenuProps {
-  icon?: ReactNode;
-  name: string;
-  items: JSX.Element[];
-  disabled?: boolean;
-  onChange: (value: string) => void;
-  styleClass?: { [key: string]: string };
+  readonly icon?: ReactNode;
+  readonly name: string;
+  readonly items: ReactElement[];
+  readonly disabled?: boolean;
+  readonly onChange: (value: string) => void;
+  readonly styleClass?: { [key: string]: string };
 }
 
 function Menu({
@@ -20,7 +20,7 @@ function Menu({
   disabled,
   onChange,
   styleClass,
-}: MenuProps) {
+}: Readonly<MenuProps>) {
   return (
     <MenuPrimitive>
       <div className={styleClass?.container}>
