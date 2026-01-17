@@ -37,4 +37,9 @@ COPY . .
 
 EXPOSE 3000
 
+# Create non-root user for security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+USER nextjs
+
 CMD ["sh", "entrypoint.sh"]

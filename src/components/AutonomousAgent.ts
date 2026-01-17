@@ -347,6 +347,8 @@ class AutonomousAgent {
 
   private async post(url: string, data: RequestBody) {
     try {
+      // Validate URL to prevent SSRF attacks
+      this.validateURL(url);
       return await axios.post(url, data);
     } catch (e) {
       this.shutdown();
@@ -448,6 +450,13 @@ class AutonomousAgent {
       value: "",
       taskId: taskId,
     });
+  }
+
+  private validateURL(url: string) {
+    // Only allow relative URLs (internal API endpoints)
+    if (!url.startsWith('/')) {
+      throw new Error(`Invalid URL: ${url}. Only relative URLs to internal API endpoints are allowed.`);
+    }
   }
 
   sendErrorMessage(error: string) {
