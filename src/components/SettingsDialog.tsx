@@ -76,7 +76,6 @@ export const SettingsDialog: React.FC<{
     }
     customSettings.saveSettings(settings);
     close();
-    return;
   };
 
   const handleReset = () => {
@@ -107,11 +106,11 @@ export const SettingsDialog: React.FC<{
         }
         value={settings.customTemperature}
         onChange={(e) =>
-          updateSettings("customTemperature", parseFloat(e.target.value))
+          updateSettings("customTemperature", Number.parseFloat(e.target.value))
         }
         type="range"
         toolTipProperties={{
-          message: t("temp-tips") as string,
+          message: t("temp-tips"),
           disabled: false,
         }}
         attributes={{
@@ -130,11 +129,11 @@ export const SettingsDialog: React.FC<{
         value={settings.customMaxLoops}
         disabled={disabled}
         onChange={(e) =>
-          updateSettings("customMaxLoops", parseFloat(e.target.value))
+          updateSettings("customMaxLoops", Number.parseFloat(e.target.value))
         }
         type="range"
         toolTipProperties={{
-          message: t("loop-tips") as string,
+          message: t("loop-tips"),
           disabled: false,
         }}
         attributes={{
@@ -153,11 +152,11 @@ export const SettingsDialog: React.FC<{
         value={settings.customMaxTokens ?? 400}
         disabled={disabled}
         onChange={(e) =>
-          updateSettings("customMaxTokens", parseFloat(e.target.value))
+          updateSettings("customMaxTokens", Number.parseFloat(e.target.value))
         }
         type="range"
         toolTipProperties={{
-          message: t("tokens-tips") as string,
+          message: t("tokens-tips"),
           disabled: false,
         }}
         attributes={{
@@ -188,7 +187,7 @@ export const SettingsDialog: React.FC<{
         className={clsx(
           "my-2",
           settings.customModelName === GPT_4 &&
-            "rounded-md border-[2px] border-white/10 bg-yellow-300 text-black"
+          "rounded-md border-[2px] border-white/10 bg-yellow-300 text-black"
         )}
       >
         <FaExclamationCircle className="inline-block" />
@@ -197,12 +196,13 @@ export const SettingsDialog: React.FC<{
           <b>
             To use the GPT-4 model, you need to also provide the API key for
             GPT-4. You can request for it&nbsp;
+            {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
             <a
               href="https://openai.com/waitlist/gpt-4-api"
               className="text-blue-500"
             >
               here
-            </a>
+            </a>{" "}
             . (ChatGPT Plus subscription will not work)
           </b>
         </Trans>
@@ -230,7 +230,7 @@ export const SettingsDialog: React.FC<{
           type="combobox"
           value={settings.customModelName}
           onChange={() => null}
-          setValue={(e) => updateSettings("customModelName", e)}
+          setValue={(e) => updateSettings("customModelName", e ?? "")}
           attributes={{ options: GPT_MODEL_NAMES }}
           disabled={disabled}
         />
@@ -256,12 +256,13 @@ export const SettingsDialog: React.FC<{
         <strong className="mt-10">
           NOTE: To get a key, sign up for an OpenAI account and visit the
           following
+          {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
           <a
             href="https://platform.openai.com/account/api-keys"
             className="text-blue-500"
           >
             link.
-          </a>
+          </a>{" "}
           This key is only used in the current browser session
         </strong>
       </Trans>

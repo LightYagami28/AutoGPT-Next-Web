@@ -1,8 +1,24 @@
 type Constructor<T> = new (...args: unknown[]) => T;
 
+export const toText = (output: unknown): string => {
+  if (typeof output === "string") return output;
+  if (output && typeof output === "object") {
+    const content = (output as { content?: unknown }).content;
+    if (typeof content === "string") return content;
+    if (Array.isArray(content)) {
+      return content
+        .map((entry) =>
+          typeof entry === "string" ? entry : JSON.stringify(entry)
+        )
+        .join("");
+    }
+  }
+  return JSON.stringify(output ?? "");
+};
+
 /* Check whether array is of the specified type */
 export const isArrayOfType = <T>(
-  arr: unknown[] | unknown,
+  arr: T[],
   type: Constructor<T> | string
 ): arr is T[] => {
   return (
@@ -18,12 +34,8 @@ export const isArrayOfType = <T>(
 };
 
 export const removeTaskPrefix = (input: string): string => {
-  // Regular expression to match task prefixes. Consult tests to understand regex
-  const prefixPattern =
-    /^(Task\s*\d*\.\s*|Task\s*\d*[-:]?\s*|-?\d+\s*[-:]?\s*)/i;
-
-  // Replace the matched prefix with an empty string
-  return input.replace(prefixPattern, "");
+  // Matches: "Task 1.", "Task 1:", "Task:", "1.", "1:", "1 -", "- 1"
+  return input.replace(/^(?:Task\s+\d+[:.-]?|Task[:.]?|-?\d+\s*[:.-])\s*/i, "");
 };
 
 export const extractTasks = (
@@ -38,14 +50,15 @@ export const extractTasks = (
 
 export const extractArray = (inputStr: string): string[] => {
   // Match an outer array of strings (including nested arrays)
-  const regex =
-    /(\[(?:\s*(?:"(?:[^"\\]|\\.|\n)*"|'(?:[^'\\]|\\.|\n)*')\s*,?)+\s*\])/;
-  const match = inputStr.match(regex);
+  const regex = /\[[^\]]*\]/;
 
-  if (match && match[0]) {
+  const match = regex.exec(inputStr);
+  const firstMatch = match?.[0];
+
+  if (firstMatch) {
     try {
       // Parse the matched string to get the array
-      return JSON.parse(match[0]) as string[];
+      return JSON.parse(firstMatch) as string[];
     } catch (error) {
       console.error("Error parsing the matched array:", error);
     }

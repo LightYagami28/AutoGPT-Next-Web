@@ -8,7 +8,7 @@ import type { toolTipProperties } from "./types";
 interface InputProps {
   small?: boolean; // Will lower padding and font size. Currently only works for the default input
   left?: React.ReactNode;
-  value: string | number | undefined;
+  value: string | number | undefined | null;
   onChange: (
     e:
       | React.ChangeEvent<HTMLInputElement>
@@ -16,12 +16,12 @@ interface InputProps {
   ) => void;
   placeholder?: string;
   disabled?: boolean;
-  setValue?: (value: string) => void;
+  setValue?: (value: string | null) => void;
   type?: string;
   subType?: string;
   attributes?: { [key: string]: string | number | string[] }; // attributes specific to input type
   toolTipProperties?: toolTipProperties;
-  inputRef?: React.RefObject<HTMLInputElement>;
+  inputRef?: React.RefObject<HTMLInputElement | null>;
   onKeyDown?: (
     e:
       | React.KeyboardEvent<HTMLInputElement>
@@ -61,6 +61,7 @@ const Input = (props: InputProps) => {
 
   if (
     isTypeCombobox() &&
+    Array.isArray(options) &&
     isArrayOfType(options, "string") &&
     setValue !== undefined &&
     typeof value === "string"
@@ -75,9 +76,8 @@ const Input = (props: InputProps) => {
           container: "relative w-full",
           options:
             "absolute right-0 top-full z-20 mt-1 max-h-48 w-full overflow-auto rounded-xl border-[2px] border-white/10 bg-[#3a3a3a] tracking-wider shadow-xl outline-0 transition-all",
-          input: `border:black delay-50 sm: flex w-full items-center justify-between rounded-xl border-[2px] border-white/10 bg-transparent px-2 py-2 text-sm tracking-wider outline-0 transition-all hover:border-[#1E88E5]/40 focus:border-[#1E88E5] sm:py-3 md:text-lg ${
-            disabled ? "cursor-not-allowed hover:border-white/10" : ""
-          } ${left ? "md:rounded-l-none" : ""}`,
+          input: `border:black delay-50 sm: flex w-full items-center justify-between rounded-xl border-[2px] border-white/10 bg-transparent px-2 py-2 text-sm tracking-wider outline-0 transition-all hover:border-[#1E88E5]/40 focus:border-[#1E88E5] sm:py-3 md:text-lg ${disabled ? "cursor-not-allowed hover:border-white/10" : ""
+            } ${left ? "md:rounded-l-none" : ""}`,
           option:
             "cursor-pointer px-2 py-2 font-mono text-sm text-white/75 hover:bg-blue-500 sm:py-3 md:text-lg",
         }}
@@ -93,7 +93,7 @@ const Input = (props: InputProps) => {
           small && "text-sm sm:py-[0]"
         )}
         placeholder={placeholder}
-        value={value}
+        value={value ?? ""}
         onChange={onChange}
         disabled={disabled}
         onKeyDown={onKeyDown}
@@ -112,7 +112,7 @@ const Input = (props: InputProps) => {
         ref={inputRef}
         placeholder={placeholder}
         type={type}
-        value={value}
+        value={value ?? ""}
         onChange={onChange}
         disabled={disabled}
         onKeyDown={onKeyDown}

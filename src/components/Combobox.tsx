@@ -3,10 +3,10 @@ import { Combobox as ComboboxPrimitive } from "@headlessui/react";
 import { FaChevronDown } from "react-icons/fa";
 
 interface ComboboxProps {
-  value: string;
+  value: string | null;
   options: string[] | any[];
   disabled?: boolean;
-  onChange: (value: string) => void;
+  onChange: (value: string | null) => void;
   styleClass?: { [key: string]: string };
 }
 
@@ -31,8 +31,8 @@ const Combobox = ({
     query === ""
       ? options
       : options.filter((opt) =>
-          opt.toLowerCase().includes(query.toLowerCase())
-        );
+        opt.toLowerCase().includes(query.toLowerCase())
+      );
 
   return (
     <ComboboxPrimitive value={value} onChange={onChange} disabled={disabled}>

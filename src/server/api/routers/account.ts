@@ -6,7 +6,7 @@ import { getCustomerId } from "../../../utils/stripe-utils";
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
 const stripe = new Stripe(env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2023-08-16",
+  apiVersion: "2025-12-15.clover",
 });
 
 export const accountRouter = createTRPCRouter({

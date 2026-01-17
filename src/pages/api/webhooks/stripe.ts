@@ -8,7 +8,7 @@ import { prisma } from "../../../server/db";
 import { getCustomerEmail } from "../../../utils/stripe-utils";
 
 const stripe = new Stripe(env.STRIPE_SECRET_KEY ?? "", {
-  apiVersion: "2023-08-16",
+  apiVersion: "2025-12-15.clover",
 });
 
 const webhookSecret = env.STRIPE_WEBHOOK_SECRET ?? "";
@@ -46,7 +46,7 @@ const webhookHandler = async (req: NextApiRequest, res: NextApiResponse) => {
     const errorMessage = err instanceof Error ? err.message : "Unknown error";
     if (err instanceof Error) console.log(err);
     console.log(`❌ Error message: ${errorMessage}`);
-    res.status(400).send(`Webhook Error: ${errorMessage}`);
+    res.status(400).json({ error: "Webhook signature verification failed" });
     return;
   }
 

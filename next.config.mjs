@@ -13,6 +13,7 @@ const config = {
   /* If trying out the experimental appDir, comment the i18n config out
    * @see https://github.com/vercel/next.js/issues/41980 */
   i18n: nextI18NextConfig.i18n,
+  turbopack: {},
   webpack: function (config, options) {
     config.experiments = { asyncWebAssembly: true, layers: true };
     return config;
