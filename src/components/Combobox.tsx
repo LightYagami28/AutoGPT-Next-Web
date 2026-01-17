@@ -4,10 +4,10 @@ import { FaChevronDown } from "react-icons/fa";
 
 interface ComboboxProps {
   value: string | null;
-  options: string[] | any[];
+  options: string[];
   disabled?: boolean;
   onChange: (value: string | null) => void;
-  styleClass?: { [key: string]: string };
+  styleClass?: Record<string, string>;
 }
 
 const Combobox = ({

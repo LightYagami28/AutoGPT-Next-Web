@@ -28,10 +28,14 @@ export const createModel = (settings: ModelSettings) => {
 
   const model = new ChatOpenAI(options);
   // Preserve legacy fields used in existing code/tests
-  (model as any).modelName = options.model;
-  (model as any).maxTokens = options.maxTokens;
+  const legacyModel = model as ChatOpenAI & {
+    modelName?: string;
+    maxTokens?: number;
+  };
+  legacyModel.modelName = options.model;
+  legacyModel.maxTokens = options.maxTokens;
 
-  return model;
+  return legacyModel;
 };
 
 export const startGoalPrompt = new PromptTemplate({

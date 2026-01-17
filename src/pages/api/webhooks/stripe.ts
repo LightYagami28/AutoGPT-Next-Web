@@ -1,6 +1,7 @@
-import { buffer } from "micro";
+import { buffer, type RequestHandler } from "micro";
 import Cors from "micro-cors";
 import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiHandler } from "next";
 
 import Stripe from "stripe";
 import { env } from "../../../env/server.mjs";
@@ -97,5 +98,8 @@ const updateUserSubscription = async (
   });
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
-export default cors(webhookHandler as any);
+const corsWrappedHandler = cors(
+  webhookHandler as unknown as RequestHandler
+) as unknown as NextApiHandler;
+
+export default corsWrappedHandler;

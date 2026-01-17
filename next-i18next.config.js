@@ -1,4 +1,3 @@
-/* eslint-disable */
 module.exports = {
   i18n: {
     defaultLocale: "zh",

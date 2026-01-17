@@ -196,7 +196,6 @@ export const SettingsDialog: React.FC<{
           <b>
             To use the GPT-4 model, you need to also provide the API key for
             GPT-4. You can request for it&nbsp;
-            {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
             <a
               href="https://openai.com/waitlist/gpt-4-api"
               className="text-blue-500"
@@ -256,7 +255,6 @@ export const SettingsDialog: React.FC<{
         <strong className="mt-10">
           NOTE: To get a key, sign up for an OpenAI account and visit the
           following
-          {/* eslint-disable-next-line jsx-a11y/anchor-has-content */}
           <a
             href="https://platform.openai.com/account/api-keys"
             className="text-blue-500"

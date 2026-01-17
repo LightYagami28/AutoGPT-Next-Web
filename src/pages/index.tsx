@@ -156,9 +156,9 @@ const Home: NextPage = () => {
     // Only Enter is pressed, execute the function
     if (e.ctrlKey && e.key === "Enter" && !disableDeployAgent) {
       if (isAgentPaused) {
-        handleContinue();
+        void handleContinue();
       }
-      handleNewGoal();
+      void handleNewGoal();
     }
   };
 
@@ -170,7 +170,7 @@ const Home: NextPage = () => {
   const handleLanguageChange = () => {
     const { pathname, asPath, query, locale } = router;
     const lng = locale === "en" ? "zh" : "en";
-    router.push({ pathname, query }, asPath, {
+    void router.push({ pathname, query }, asPath, {
       locale: lng,
     });
     setCustomLanguage(lng);
@@ -279,13 +279,13 @@ const Home: NextPage = () => {
                 onSave={
                   shouldShowSave
                     ? (format) => {
-                        setHasSaved(true);
-                        agentUtils.saveAgent({
-                          goal: goalInput.trim(),
-                          name: name.trim(),
-                          tasks: messages,
-                        });
-                      }
+                      setHasSaved(true);
+                      agentUtils.saveAgent({
+                        goal: goalInput.trim(),
+                        name: name.trim(),
+                        tasks: messages,
+                      });
+                    }
                     : undefined
                 }
                 scrollToBottom
@@ -325,7 +325,7 @@ const Home: NextPage = () => {
                   value={goalInput}
                   onChange={(e) => setGoalInput(e.target.value)}
                   onKeyDown={(e) => handleKeyPress(e)}
-                  placeholder={t("placeholder-agent-goal") as string}
+                  placeholder={t("placeholder-agent-goal")}
                   type="textarea"
                 />
               </Expand>

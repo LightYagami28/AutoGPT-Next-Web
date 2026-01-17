@@ -12,7 +12,7 @@ import { extractTasks, toText } from "../utils/helpers";
 import { Serper } from "./custom-tools/serper";
 
 const runPrompt = async (
-  prompt: PromptTemplate<any, any>,
+  prompt: PromptTemplate,
   variables: Record<string, unknown>,
   modelSettings: ModelSettings
 ) => {
@@ -173,23 +173,23 @@ const OpenAIAgentService: AgentService = {
 };
 
 const MockAgentService: AgentService = {
-  startGoalAgent: async () => ["Task 1"],
+  startGoalAgent: () => Promise.resolve(["Task 1"]),
 
-  createTasksAgent: async () => ["Task 4"],
+  createTasksAgent: () => Promise.resolve(["Task 4"]),
 
-  analyzeTaskAgent: async () =>
-  ({
-    action: "reason",
-    arg: "Mock analysis",
-  }),
+  analyzeTaskAgent: () =>
+    Promise.resolve({
+      action: "reason",
+      arg: "Mock analysis",
+    }),
 
-  executeTaskAgent: async (
+  executeTaskAgent: (
     modelSettings: ModelSettings,
     goal: string,
     task: string,
     analysis: Analysis,
     customLanguage: string,
-  ) => "Result: " + task,
+  ) => Promise.resolve("Result: " + task),
 };
 
 export default env.NEXT_PUBLIC_FF_MOCK_MODE_ENABLED

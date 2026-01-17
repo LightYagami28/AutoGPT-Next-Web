@@ -269,7 +269,6 @@ class AutonomousAgent {
     };
     const res = await this.post(`/api/agent/start`, data);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
     return res.data.newTasks as string[];
   }
 
@@ -301,7 +300,6 @@ class AutonomousAgent {
       customLanguage: this.customLanguage,
     };
     const res = await this.post(`/api/agent/create`, data);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
     return res.data.newTasks as string[];
   }
 
@@ -321,7 +319,6 @@ class AutonomousAgent {
       customLanguage: this.customLanguage,
     };
     const res = await this.post("/api/agent/analyze", data);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
     return res.data.response as Analysis;
   }
 
@@ -345,7 +342,6 @@ class AutonomousAgent {
       customLanguage: this.customLanguage,
     };
     const res = await this.post("/api/agent/execute", data);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
     return res.data.response as string;
   }
 
