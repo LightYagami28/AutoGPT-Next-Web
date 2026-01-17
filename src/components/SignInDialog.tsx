@@ -27,9 +27,15 @@ export const SignInDialog = ({ show, close }: SignInDialogProps) => {
       <Trans i18nKey="signin-tips" ns="chat">
         <p>
           Please
-          <a className="link" onClick={handleSignIn}>
+          {" "}
+          <button
+            className="link"
+            onClick={handleSignIn}
+            type="button"
+          >
             sign in
-          </a>
+          </button>
+          {" "}
           to deploy an Agent! 🤖
         </p>
       </Trans>

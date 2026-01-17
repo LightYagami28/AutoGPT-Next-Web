@@ -6,7 +6,6 @@ import clsx from "clsx";
 interface LayoutProps {
   children: ReactNode;
   className?: string;
-  centered?: boolean;
 }
 
 const DefaultLayout = (props: LayoutProps) => {

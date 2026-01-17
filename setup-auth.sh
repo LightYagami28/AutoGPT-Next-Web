@@ -6,7 +6,7 @@ GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
 # Check if we are running in a terminal that supports colors
-if [ -t 1 ]; then
+if [[ -t 1 ]]; then
   # Use colors
   RED=$(printf '\033[31m')
   GREEN=$(printf '\033[32m')

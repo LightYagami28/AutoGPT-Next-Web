@@ -76,9 +76,9 @@
     "autoprefixer": "^10.4.23",
     "cross-env": "^10.1.0",
     "dotenv": "^17.2.3",
-    "eslint-plugin-jsx-a11y": "^6.10.0",
     "eslint": "^9.39.2",
     "eslint-config-next": "^15.2.1",
+    "eslint-plugin-jsx-a11y": "^6.10.0",
     "husky": "^9.1.7",
     "jest": "^30.2.0",
     "jest-environment-jsdom": "^30.2.0",
@@ -88,7 +88,8 @@
     "prettier-plugin-tailwindcss": "^0.7.2",
     "prisma": "^7.2.0",
     "tailwindcss": "^4.1.18",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.0"
   },
   "ct3aMetadata": {
     "initVersion": "7.4.0"

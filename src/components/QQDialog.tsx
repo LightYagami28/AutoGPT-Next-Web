@@ -6,10 +6,10 @@ import Image from "next/image";
 export default function QQDialog({
   show,
   close,
-}: {
+}: Readonly<{
   show: boolean;
   close: () => void;
-}) {
+}>) {
   const header = (
     <div className="flex items-center gap-2">
       QQ <FaQq />

@@ -7,10 +7,10 @@ import { authEnabled } from "../utils/env-helper";
 export default function HelpDialog({
   show,
   close,
-}: {
+}: Readonly<{
   show: boolean;
   close: () => void;
-}) {
+}>) {
   const { t } = useTranslation("help");
 
   return (
@@ -36,26 +36,30 @@ export default function HelpDialog({
         </div>
         <div className="mt-4 flex w-full items-center justify-center gap-5">
           {authEnabled && (
-            <div
-              className="cursor-pointer rounded-full bg-black/30 p-3 hover:bg-black/70"
+            <button
+              className="cursor-pointer rounded-full bg-black/30 p-3 hover:bg-black/70 transition-colors"
               onClick={() =>
                 window.open("https://discord.gg/Xnsbhg6Uvd", "_blank")
               }
+              type="button"
+              aria-label="Join Discord community"
             >
               <FaDiscord size={30} />
-            </div>
+            </button>
           )}
-          <div
-            className="cursor-pointer rounded-full bg-black/30 p-3 hover:bg-black/70"
+          <button
+            className="cursor-pointer rounded-full bg-black/30 p-3 hover:bg-black/70 transition-colors"
             onClick={() =>
               window.open(
                 "https://github.com/Dogtiti/AutoGPT-Next-Web",
                 "_blank"
               )
             }
+            type="button"
+            aria-label="Open GitHub repository"
           >
             <FaGithub size={30} />
-          </div>
+          </button>
         </div>
       </div>
     </Dialog>

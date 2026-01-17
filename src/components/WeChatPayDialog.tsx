@@ -7,10 +7,10 @@ import Image from "next/image";
 export default function WeChatPayDialog({
   show,
   close,
-}: {
+}: Readonly<{
   show: boolean;
   close: () => void;
-}) {
+}>) {
   const { t } = useTranslation();
 
   const header = (

@@ -58,12 +58,12 @@ const MyDocument: React.FC<{
   <Document>
     <Page size="A4" style={styles.page}>
       {textSections.map((text, index) => (
-        <>
-          <Text key={index} style={styles.section}>
-            {renderTextLines(text)}
+        <React.Fragment key={`section-${index}-${text.length}`}>
+          <Text style={styles.section}>
+            {renderTextLines(text, index)}
           </Text>
           <HorizontalRule />
-        </>
+        </React.Fragment>
       ))}
     </Page>
   </Document>
@@ -71,7 +71,7 @@ const MyDocument: React.FC<{
 
 const HorizontalRule: React.FC = () => <View style={styles.horizontalRule} />;
 
-const renderTextLines = (text: string): React.ReactNode[] => {
+const renderTextLines = (text: string, sectionIndex: number): React.ReactNode[] => {
   const MAX_LINE_LENGTH = 10;
   const lines: string[] = [];
   let start = 0;
@@ -81,8 +81,8 @@ const renderTextLines = (text: string): React.ReactNode[] => {
     lines.push(line);
     start = end;
   }
-  return lines.map((line: string, index) => (
-    <React.Fragment key={index}>
+  return lines.map((line: string, lineIndex) => (
+    <React.Fragment key={`line-${sectionIndex}-${lineIndex}`}>
       {line}
       <br />
     </React.Fragment>

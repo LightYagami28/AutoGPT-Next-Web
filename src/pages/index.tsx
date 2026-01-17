@@ -156,9 +156,10 @@ const Home: NextPage = () => {
     // Only Enter is pressed, execute the function
     if (e.ctrlKey && e.key === "Enter" && !disableDeployAgent) {
       if (isAgentPaused) {
-        void handleContinue();
+        handleContinue().catch(() => { });
+      } else {
+        handleNewGoal().catch(() => { });
       }
-      void handleNewGoal();
     }
   };
 

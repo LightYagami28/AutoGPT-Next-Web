@@ -14,6 +14,7 @@ import {
   FaQq,
   FaDonate,
 } from "react-icons/fa";
+import Image from "next/image";
 import clsx from "clsx";
 import { useAuth } from "../hooks/useAuth";
 import type { Session } from "next-auth";
@@ -121,9 +122,9 @@ const Drawer = ({
             </button>
           </div>
           <ul className="flex flex-col gap-2 overflow-auto">
-            {userAgents.map((agent, index) => (
+            {userAgents.map((agent) => (
               <DrawerItem
-                key={index}
+                key={agent.id}
                 icon={<FaRobot />}
                 text={agent.name}
                 className="w-full"
@@ -226,7 +227,6 @@ interface DrawerItemProps
   border?: boolean;
   onClick?: () => void | Promise<void>;
   className?: string;
-  small?: boolean;
 }
 
 const DrawerItem = (props: DrawerItemProps) => {
@@ -293,11 +293,12 @@ const ProItem: React.FC<{
   let icon = session?.user ? <FaUser /> : <FaRocket />;
   if (session?.user?.image) {
     icon = (
-      // eslint-disable-next-line @next/next/no-img-element
-      <img
-        src={session?.user.image}
+      <Image
+        src={session.user.image}
         className="h-6 w-6 rounded-full"
         alt="User Image"
+        width={24}
+        height={24}
       />
     );
   }

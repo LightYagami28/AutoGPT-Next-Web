@@ -9,13 +9,13 @@ export default function Dialog({
   isShown,
   close,
   footerButton,
-}: {
+}: Readonly<{
   header: React.ReactNode;
   children: React.ReactNode;
   isShown: boolean;
   close: () => void;
   footerButton?: React.ReactNode;
-}) {
+}>) {
   const { t } = useTranslation();
   if (!isShown) {
     return <>{null}</>;
