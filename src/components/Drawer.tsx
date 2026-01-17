@@ -97,15 +97,14 @@ const Drawer = ({
   const userAgents = query.data ?? [];
 
   return (
-    <>
-      <div
-        id="drawer"
-        className={clsx(
-          showDrawer ? "translate-x-0 md:sticky" : "-translate-x-full",
-          "z-30 m-0 flex h-screen w-72 flex-col justify-between bg-zinc-900 p-3 font-mono text-white shadow-3xl transition-all",
-          "fixed top-0 ",
-        )}
-      >
+    <div
+      id="drawer"
+      className={clsx(
+        showDrawer ? "translate-x-0 md:sticky" : "-translate-x-full",
+        "z-30 m-0 flex h-screen w-72 flex-col justify-between bg-zinc-900 p-3 font-mono text-white shadow-3xl transition-all",
+        "fixed top-0 ",
+      )}
+    >
         <div className="flex flex-col gap-1 overflow-hidden">
           <div className="mb-2 flex justify-center gap-2">
             {authEnabled ? t("my-agents") : t("create-agent")}
@@ -213,9 +212,8 @@ const Drawer = ({
           <hr className="my-2 border-white/20" />
         </div>
       </div>
-    </>
-  );
-};
+    );
+  };
 
 interface DrawerItemProps
   extends Pick<

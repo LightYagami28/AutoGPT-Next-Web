@@ -30,15 +30,13 @@ const PDFButton = ({
   };
 
   return (
-    <>
-      <WindowButton
-        onClick={() => {
-          downloadPDF().catch(console.error);
-        }}
-        icon={<FaFilePdf size={12} />}
-        name={name}
-      />
-    </>
+    <WindowButton
+      onClick={() => {
+        downloadPDF().catch(console.error);
+      }}
+      icon={<FaFilePdf size={12} />}
+      name={name}
+    />
   );
 };
 

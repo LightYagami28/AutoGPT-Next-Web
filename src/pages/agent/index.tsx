@@ -65,9 +65,10 @@ const AgentPage: NextPage = () => {
         <Button
           icon={<FaShare />}
           onClick={() => {
-            void window.navigator.clipboard
+            globalThis.navigator?.clipboard
               .writeText(shareLink())
-              .then(() => setShowCopied(true));
+              .then(() => setShowCopied(true))
+              .catch(() => { });
           }}
           enabledClassName={"bg-green-600 hover:bg-green-400"}
         >

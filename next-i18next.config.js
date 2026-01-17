@@ -4,7 +4,7 @@ module.exports = {
     locales: ["zh", "en"],
   },
   localePath:
-    typeof globalThis.window === "undefined"
+    globalThis.window === undefined
       ? require("node:path").resolve("./public/locales")
       : "/locales",
   // debug: process.env.NODE_ENV === "development",

@@ -11,7 +11,7 @@ export function useGuestMode(customGuestKey = "") {
     const publicGuestKey = env.NEXT_PUBLIC_GUEST_KEY ?? "";
     const keys = publicGuestKey.split(",").filter((key) => !!key);
     const isGuestMode = keys.length > 0;
-    const isMatchedGuestKey = !!keys.find((key) => key === customGuestKey);
+    const isMatchedGuestKey = keys.some((key) => key === customGuestKey);
     const isValidGuest = isMatchedGuestKey;
     setGuestData({ isValidGuest, isGuestMode });
   }, [customGuestKey]);

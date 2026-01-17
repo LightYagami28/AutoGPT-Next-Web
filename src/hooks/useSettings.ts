@@ -23,7 +23,7 @@ export const DEFAULT_SETTINGS: ModelSettings = {
 
 const loadSettings = (): ModelSettings => {
   const defaultSettings = { ...DEFAULT_SETTINGS };
-  if (typeof globalThis.window === "undefined") {
+  if (globalThis.window === undefined) {
     return defaultSettings;
   }
 
