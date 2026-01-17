@@ -50,7 +50,7 @@ const AgentPage: NextPage = () => {
         fullscreen
       />
       <div className="flex flex-row gap-2">
-        <Button icon={<FaBackspace />} onClick={() => router.push("/").catch(() => {})}>
+        <Button icon={<FaBackspace />} onClick={() => router.push("/").catch(() => { })}>
           {t("back")}
         </Button>
         <Button

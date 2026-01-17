@@ -127,7 +127,7 @@ const Drawer = ({
                 icon={<FaRobot />}
                 text={agent.name}
                 className="w-full"
-                onClick={() => router.push(`/agent?id=${agent.id}`).catch(() => {})}
+                onClick={() => router.push(`/agent?id=${agent.id}`).catch(() => { })}
               />
             ))}
 
