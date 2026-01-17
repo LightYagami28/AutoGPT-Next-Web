@@ -74,10 +74,8 @@ const ChatWindow = ({
 
   useEffect(() => {
     // Scroll to bottom on re-renders
-    if (scrollToBottom && scrollRef && scrollRef.current) {
-      if (!hasUserScrolled) {
-        scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-      }
+    if (scrollToBottom && scrollRef?.current && !hasUserScrolled) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   });
 

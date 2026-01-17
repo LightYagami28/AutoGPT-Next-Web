@@ -170,8 +170,10 @@ const Home: NextPage = () => {
   const handleLanguageChange = () => {
     const { pathname, asPath, query, locale } = router;
     const lng = locale === "en" ? "zh" : "en";
-    void router.push({ pathname, query }, asPath, {
+    router.push({ pathname, query }, asPath, {
       locale: lng,
+    }).catch(() => {
+      // Handle language change error silently
     });
     setCustomLanguage(lng);
   };

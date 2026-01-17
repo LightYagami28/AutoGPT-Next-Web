@@ -28,12 +28,12 @@ const validateDataBaseUrl = () => {
 const validateNextUrl = () => {
   return isProdutionAndAuthEnabled
     ? z.preprocess(
-        // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
-        // Since NextAuth.js automatically uses the VERCEL_URL if present.
-        (str) => process.env.VERCEL_URL ?? str,
-        // VERCEL_URL doesn't include `https` so it cant be validated as a URL
-        process.env.VERCEL ? z.string() : z.string().url()
-      )
+      // This makes Vercel deployments not fail if you don't set NEXTAUTH_URL
+      // Since NextAuth.js automatically uses the VERCEL_URL if present.
+      (str) => process.env.VERCEL_URL ?? str,
+      // VERCEL_URL doesn't include `https` so it cant be validated as a URL
+      process.env.VERCEL ? z.string() : z.string().url()
+    )
     : z.string().url();
 };
 
@@ -48,6 +48,7 @@ export const serverSchema = z.object({
   NEXTAUTH_URL: validateNextUrl(),
   OPENAI_API_KEY: z.string(),
 
+  // OAuth provider credentials - should only be set via environment variables
   GOOGLE_CLIENT_ID: requiredAuthEnabledForProduction(),
   GOOGLE_CLIENT_SECRET: requiredAuthEnabledForProduction(),
   GITHUB_CLIENT_ID: requiredAuthEnabledForProduction(),

@@ -26,7 +26,9 @@ const AgentPage: NextPage = () => {
 
   const deleteAgent = api.agent.deleteById.useMutation({
     onSuccess: () => {
-      void router.push("/");
+      router.push("/").catch(() => {
+        // Handle navigation error silently
+      });
     },
   });
 
@@ -48,7 +50,7 @@ const AgentPage: NextPage = () => {
         fullscreen
       />
       <div className="flex flex-row gap-2">
-        <Button icon={<FaBackspace />} onClick={() => void router.push("/")}>
+        <Button icon={<FaBackspace />} onClick={() => router.push("/").catch(() => {})}>
           {t("back")}
         </Button>
         <Button

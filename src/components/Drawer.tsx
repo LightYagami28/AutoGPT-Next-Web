@@ -60,11 +60,15 @@ const Drawer = ({
   }, []);
 
   const handleSignIn = () => {
-    void signIn();
+    signIn().catch(() => {
+      // Handle sign-in error silently
+    });
   };
 
   const handleSignOut = () => {
-    void signOut();
+    signOut().catch(() => {
+      // Handle sign-out error silently
+    });
   };
 
   const sub = api.account.subscribe.useMutation({
@@ -123,7 +127,7 @@ const Drawer = ({
                 icon={<FaRobot />}
                 text={agent.name}
                 className="w-full"
-                onClick={() => void router.push(`/agent?id=${agent.id}`)}
+                onClick={() => router.push(`/agent?id=${agent.id}`).catch(() => {})}
               />
             ))}
 
@@ -255,7 +259,9 @@ const DrawerItem = (props: DrawerItemProps) => {
         )}
         onClick={() => {
           if (!onClick) return;
-          void onClick();
+          onClick().catch(() => {
+            // Handle error silently
+          });
         }}
       >
         {icon}

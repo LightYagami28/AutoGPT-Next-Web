@@ -4,8 +4,8 @@ module.exports = {
     locales: ["zh", "en"],
   },
   localePath:
-    typeof window === "undefined"
-      ? require("path").resolve("./public/locales")
+    typeof globalThis.window === "undefined"
+      ? require("node:path").resolve("./public/locales")
       : "/locales",
   // debug: process.env.NODE_ENV === "development",
   reloadOnPrerender: process.env.NODE_ENV === "development",
