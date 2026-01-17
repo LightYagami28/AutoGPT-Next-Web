@@ -29,7 +29,7 @@ export const createModel = (settings: ModelSettings) => {
 
   const model = new ChatOpenAI(options);
   // Preserve legacy fields used in existing code/tests
-  const legacyModel = model as ChatOpenAI & {
+  const legacyModel = model as {
     modelName?: string;
     maxTokens?: number;
   };

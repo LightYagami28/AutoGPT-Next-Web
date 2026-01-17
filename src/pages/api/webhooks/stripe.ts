@@ -1,7 +1,6 @@
 import { buffer, type RequestHandler } from "micro";
 import Cors from "micro-cors";
-import type { NextApiRequest, NextApiResponse } from "next";
-import type { NextApiHandler } from "next";
+import type { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
 import Stripe from "stripe";
 import { env } from "../../../env/server.mjs";
 import { prisma } from "../../../server/db";

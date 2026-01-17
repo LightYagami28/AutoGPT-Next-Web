@@ -395,7 +395,7 @@ const ChatMessage = ({
           <div className="mr-2 inline-block h-[0.9em]">
             {getTaskStatusIcon(message, {})}
           </div>
-          <span className="mr-2 font-bold">{getMessagePrefix(message)}</span>
+          <span className="mr-2 font-bold">{getMessagePrefix(message, t)}</span>
         </>
       )}
 
@@ -426,8 +426,7 @@ const ChatMessage = ({
   );
 };
 
-const getMessagePrefix = (message: Message) => {
-  const { t } = useTranslation("chat");
+const getMessagePrefix = (message: Message, t: (key: string) => string): string => {
   if (message.type === MESSAGE_TYPE_GOAL) {
     return t("new-goal");
   } else if (message.type === MESSAGE_TYPE_THINKING) {
